@@ -36,6 +36,7 @@ dir.Build(wd)
 ↓
 
 ```txt
+$ tree -a
 .
 └── .vim
     ├── SKK-JISYO.L
