@@ -2,6 +2,7 @@ package builddir_test
 
 import (
 	. "github.com/kusabashira/go-builddir"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -39,7 +40,7 @@ func exist(path string) bool {
 }
 
 func TestSetupDir(t *testing.T) {
-	wd, err := filepath.Abs(".")
+	wd, err := os.Getwd()
 	if err != nil {
 		t.Fatalf("failed load working dir %v:", err)
 	}
@@ -64,15 +65,44 @@ func TestSetupDir(t *testing.T) {
 }
 
 func TestSetupDirTwice(t *testing.T) {
-	wd, err := filepath.Abs(".")
+	wd, err := os.Getwd()
 	if err != nil {
-		t.Fatal("failed load working dir %v:", err)
+		t.Fatalf("failed load working dir %v:", err)
 	}
 	defer os.RemoveAll("test")
 	if err = dir.Build(wd); err != nil {
-		t.Fatalf("failed create dir %v:", err)
+		t.Fatalf("failed 1st create dir %v:", err)
 	}
 	if err = dir.Build(wd); err != nil {
-		t.Fatalf("failed twice create dir %v:", err)
+		t.Fatalf("failed 2nd create dir %v:", err)
+	}
+}
+
+func TestNotOverWrite(t *testing.T) {
+	wd, err := os.Getwd()
+	if err = dir.Build(wd); err != nil {
+		t.Fatalf("failed load working dir %v:", err)
+	}
+	defer os.RemoveAll("test")
+
+	if err = dir.Build(wd); err != nil {
+		t.Fatalf("failed 1st create dir %v:", err)
+	}
+	
+	file_a := filepath.Join(wd, "test", "file_a")
+	if err = ioutil.WriteFile(file_a, []byte("new\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	if err = dir.Build(wd); err != nil {
+		t.Fatalf("failed 2nd create dir %v:", err)
+	}
+
+	a_content, err := ioutil.ReadFile(file_a)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(a_content) != "new\n" {
+		t.Fatalf("%v over writed by dir.Build:", file_a)
 	}
 }
