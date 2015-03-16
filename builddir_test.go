@@ -10,7 +10,7 @@ import (
 
 var dir = &Dir{
 	Name: "test",
-	Content: []Item{
+	Content: Items{
 		&File{
 			Name: "file_a",
 			Content: []byte("content_a\n"),
@@ -24,7 +24,7 @@ var dir = &Dir{
 		},
 		&Dir{
 			Name: "dir_b",
-			Content: []Item{
+			Content: Items{
 				&File{
 					Name: "file_c",
 					Content: []byte("content_c\n"),

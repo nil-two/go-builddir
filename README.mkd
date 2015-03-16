@@ -7,7 +7,7 @@ Usage
 ```go
 dir := &builddir.Dir{
 	Name: ".vim",
-	Content: []builddir.Item{
+	Content: builddir.Items{
 		&builddir.Dir{
 			Name: "bundle",
 		},

@@ -15,6 +15,18 @@ type Item interface {
 	Build(root string) error
 }
 
+type Items []Item
+
+func (i *Items) Build(root string) error {
+	for _, i := range []Item(*i) {
+		err := i.Build(root)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 type File struct {
 	Name string
 	Content []byte
@@ -30,7 +42,7 @@ func (f *File) Build(root string) error {
 
 type Dir struct {
 	Name string
-	Content []Item
+	Content Items
 }
 
 func (d *Dir) Build(root string) error {
@@ -40,11 +52,5 @@ func (d *Dir) Build(root string) error {
 			return err
 		}
 	}
-	for _, i := range d.Content {
-		err := i.Build(path)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+	return d.Content.Build(path)
 }
