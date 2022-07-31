@@ -1,7 +1,7 @@
 package builddir_test
 
 import (
-	. "github.com/kusabashira/go-builddir"
+	. "github.com/nil2nekoni/go-builddir"
 	"io/ioutil"
 	"os"
 	"path/filepath"
